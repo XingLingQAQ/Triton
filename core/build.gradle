@@ -28,6 +28,9 @@ dependencies {
         exclude group: 'net.kyori', module: 'adventure-text-serialize-plain'
     }
 
+    // Paper 1.21.3+ does not have this anymore, so shade and relocate it
+    implementation 'org.fusesource.jansi:jansi:2.4.0'
+
     compileOnly 'me.clip:placeholderapi:2.11.6'
     compileOnly 'org.apache.logging.log4j:log4j-core:2.17.1'
     implementation 'org.slf4j:slf4j-nop:1.7.36'
