@@ -29,8 +29,9 @@ public class HoverComponentWrapper {
         contents.forEach((content -> {
             if (content instanceof Text) {
                 val text = (Text) content;
-                if (text.getValue() instanceof BaseComponent[]) {
-                    val string = TextComponent.toLegacyText((BaseComponent[]) text.getValue());
+                val value = text.getValue();
+                if (value instanceof BaseComponent[]) {
+                    val string = TextComponent.toLegacyText((BaseComponent[]) value);
                     // TODO implement check in replaceLanguages instead?
                     val replaced = languageParser.replaceLanguages(Triton.get().getLanguageManager()
                             .matchPattern(string, language), language, syntax);
@@ -38,6 +39,17 @@ public class HoverComponentWrapper {
                         changed.set(true);
                         if (replaced != null) // handle disabled line
                             newContents.add(new Text(TextComponent.fromLegacyText(replaced)));
+                        return;
+                    }
+                } else if (value instanceof String) {
+                    val string = (String) value;
+                    // TODO implement check in replaceLanguages instead?
+                    val replaced = languageParser.replaceLanguages(Triton.get().getLanguageManager()
+                            .matchPattern(string, language), language, syntax);
+                    if (!string.equals(replaced)) {
+                        changed.set(true);
+                        if (replaced != null) // handle disabled line
+                            newContents.add(new Text(replaced));
                         return;
                     }
                 }
