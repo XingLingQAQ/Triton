@@ -30,28 +30,23 @@ public class HoverComponentWrapper {
             if (content instanceof Text) {
                 val text = (Text) content;
                 val value = text.getValue();
+                String valueString;
                 if (value instanceof BaseComponent[]) {
-                    val string = TextComponent.toLegacyText((BaseComponent[]) value);
-                    // TODO implement check in replaceLanguages instead?
-                    val replaced = languageParser.replaceLanguages(Triton.get().getLanguageManager()
-                            .matchPattern(string, language), language, syntax);
-                    if (!string.equals(replaced)) {
-                        changed.set(true);
-                        if (replaced != null) // handle disabled line
-                            newContents.add(new Text(TextComponent.fromLegacyText(replaced)));
-                        return;
-                    }
+                    valueString = TextComponent.toLegacyText((BaseComponent[]) value);
                 } else if (value instanceof String) {
-                    val string = (String) value;
-                    // TODO implement check in replaceLanguages instead?
-                    val replaced = languageParser.replaceLanguages(Triton.get().getLanguageManager()
-                            .matchPattern(string, language), language, syntax);
-                    if (!string.equals(replaced)) {
-                        changed.set(true);
-                        if (replaced != null) // handle disabled line
-                            newContents.add(new Text(replaced));
-                        return;
-                    }
+                    valueString = (String) value;
+                } else {
+                    newContents.add(text);
+                    return;
+                }
+                // TODO implement check in replaceLanguages instead?
+                val replaced = languageParser.replaceLanguages(Triton.get().getLanguageManager()
+                        .matchPattern(valueString, language), language, syntax);
+                if (!valueString.equals(replaced)) {
+                    changed.set(true);
+                    if (replaced != null) // handle disabled line
+                        newContents.add(new Text(TextComponent.fromLegacyText(replaced)));
+                    return;
                 }
                 newContents.add(text);
             } else if (content instanceof Item) {
