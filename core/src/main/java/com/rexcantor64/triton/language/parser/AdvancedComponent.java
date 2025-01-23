@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.val;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.TextComponent;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +50,16 @@ public class AdvancedComponent {
             boolean hasHover = false;
             boolean hasFont = false;
             builder.append(ComponentUtils.getColorFromBaseComponent(comp).toString());
+            try {
+                Color shadowColor = comp.getShadowColor();
+                if (shadowColor != null) {
+                    // getRGB also includes alpha information
+                    builder.append("§s");
+                    builder.append(String.format("%08x", shadowColor.getRGB()));
+                }
+            } catch (NoSuchMethodError ignore) {
+                // old versions of Spigot don't have getShadowColor()
+            }
             if (comp.isBold())
                 builder.append(ChatColor.BOLD.toString());
             if (comp.isItalic())
@@ -159,6 +171,11 @@ public class AdvancedComponent {
                     val color = text.substring(i + 1, i + 13);
                     format = ChatColor.of("#" + color.replace("\u00A7", ""));
                     i += 12;
+                } else if (lowercaseChar == 's' && i + 8 < text.length()) {
+                    val color = text.substring(i + 1, i + 9);
+                    component.setShadowColor(new Color(Integer.parseUnsignedInt(color, 16), true));
+                    i += 8;
+                    continue;
                 } else {
                     format = ChatColor.getByChar(lowercaseChar);
                 }

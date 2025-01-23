@@ -8,6 +8,8 @@ import net.md_5.bungee.api.chat.hover.content.Text;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.junit.jupiter.api.Test;
 
+import java.awt.*;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AdvancedComponentTest {
@@ -31,6 +33,28 @@ public class AdvancedComponentTest {
         BaseComponent[] components = advancedComponent.toBaseComponent();
 
         String expectedResultJson = "{\"extra\":[{\"strikethrough\":true,\"color\":\"gray\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"\"},\"extra\":[{\"text\":\"Testing\"}],\"text\":\"\"},{\"color\":\"gray\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"\"},\"extra\":[{\"text\":\"another test\"}],\"text\":\"\"}],\"text\":\"\"}";
+        assertEquals(expectedResultJson, ComponentSerializer.toString(components));
+    }
+
+    @Test
+    public void testShadowColor() {
+        BaseComponent root = new TextComponent();
+        BaseComponent child1 = new TextComponent("Testing");
+        child1.setColor(ChatColor.GRAY);
+        child1.setStrikethrough(true);
+        child1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("")));
+        root.addExtra(child1);
+        BaseComponent child2 = new TextComponent("another test");
+        child2.setColor(ChatColor.GRAY);
+        child2.setShadowColor(new Color(0x33, 0x44, 0x55, 0x88));
+        root.addExtra(child2);
+
+        AdvancedComponent advancedComponent = AdvancedComponent.fromBaseComponent(root);
+        advancedComponent.setText(advancedComponent.getTextClean());
+
+        BaseComponent[] components = advancedComponent.toBaseComponent();
+
+        String expectedResultJson = "{\"extra\":[{\"strikethrough\":true,\"color\":\"gray\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"\"},\"extra\":[{\"text\":\"Testing\"}],\"text\":\"\"},{\"color\":\"gray\",\"shadow_color\":-2009906091,\"text\":\"another test\"}],\"text\":\"\"}";
         assertEquals(expectedResultJson, ComponentSerializer.toString(components));
     }
 }

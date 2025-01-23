@@ -73,6 +73,11 @@ public class ComponentUtils {
         } catch (NoSuchMethodError ignore) {
             // Ignore, it's an outdated server
         }
+        try {
+            target.setShadowColor(origin.getShadowColorRaw());
+        } catch (NoSuchMethodError ignore) {
+            // Ignore, it's an outdated server
+        }
     }
 
     public static ChatColor getColorFromBaseComponent(BaseComponent bc) {
@@ -96,6 +101,12 @@ public class ComponentUtils {
         }
         try {
             if (!Objects.equals(c1.getFontRaw(), c2.getFontRaw()))
+                return false;
+        } catch (NoSuchMethodError ignore) {
+            // Ignore, it's an outdated server
+        }
+        try {
+            if (!Objects.equals(c1.getShadowColorRaw(), c2.getShadowColorRaw()))
                 return false;
         } catch (NoSuchMethodError ignore) {
             // Ignore, it's an outdated server
