@@ -71,10 +71,10 @@ public class VelocityLanguagePlayer implements LanguagePlayer {
 
     public void setLang(Language language, boolean sendToSpigot) {
         // TODO fire Triton's API change language event
+        this.language = language;
         if (this.waitingForClientLocale && getParent() != null)
             parent.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(Triton.get().getMessagesConfig()
                     .getMessage("success.detected-language", language.getDisplayName())));
-        this.language = language;
         this.waitingForClientLocale = false;
 
         if (sendToSpigot && getParent() != null)

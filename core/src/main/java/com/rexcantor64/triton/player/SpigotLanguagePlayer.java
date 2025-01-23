@@ -119,6 +119,8 @@ public class SpigotLanguagePlayer implements LanguagePlayer {
         PlayerChangeLanguageSpigotEvent event = new PlayerChangeLanguageSpigotEvent(this, this.lang, lang);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) return;
+        boolean hasChanged = !Objects.equals(event.getNewLanguage(), this.lang);
+        this.lang = event.getNewLanguage();
         if (this.waitingForClientLocale) {
             try {
                 if (toBukkit().isPresent()) {
@@ -133,8 +135,6 @@ public class SpigotLanguagePlayer implements LanguagePlayer {
                 Triton.get().getLogger().logError(e, "Failed to send \"language changed\" message.");
             }
         }
-        boolean hasChanged = !Objects.equals(event.getNewLanguage(), this.lang);
-        this.lang = event.getNewLanguage();
         this.waitingForClientLocale = false;
         if (hasChanged) {
             refreshAll();
