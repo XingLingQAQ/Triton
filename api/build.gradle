@@ -1,10 +1,64 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
 group 'com.rexcantor64.triton'
 
+apply from: '../gradle/publish.gradle'
+
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT'
     compileOnly 'net.md-5:bungeecord-api:1.17-R0.1-SNAPSHOT'
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+tasks {
+    jar {
+        manifest {
+            attributes 'Automatic-Module-Name': 'com.rexcantor64.triton.api'
+        }
+    }
+
+    javadoc {
+        options.encoding = 'UTF-8'
+        options.charSet = 'UTF-8'
+        options.source = '8'
+        options.links(
+                'https://hub.spigotmc.org/javadocs/spigot/',
+                'https://jd.papermc.io/waterfall/1.20/', // Use Waterfall's JavaDocs instead of Bungee's since those are broken
+                'https://docs.oracle.com/en/java/javase/21/docs/api/',
+        )
+
+        // Disable the crazy super-strict doclint tool in Java 8
+        options.addStringOption('Xdoclint:none', '-quiet')
+
+        // Mark sources as Java 8 source compatible
+        options.source = '8'
+    }
+}
+
+publishing {
+    publications {
+        tritonApi(MavenPublication) {
+            from components.java
+
+            artifactId = 'triton-api'
+
+            pom {
+                name.set('Triton API')
+                description.set('Translate your server! Sends the same message in different languages... Hooks into all plugins!')
+                url.set('https://triton.rexcantor64.com')
+                scm {
+                    url.set('https://github.com/tritonmc/Triton')
+                    connection.set('scm:git:https://github.com/tritonmc/Triton.git')
+                    developerConnection.set('scm:git:https://github.com/tritonmc/Triton.git')
+                }
+            }
+        }
+    }
 }
