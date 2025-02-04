@@ -20,6 +20,7 @@ import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.protocol.NumberFormat;
 import net.md_5.bungee.protocol.packet.Chat;
 import net.md_5.bungee.protocol.packet.ScoreboardObjective.HealthDisplay;
+import net.md_5.bungee.protocol.packet.Team;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -229,8 +230,8 @@ public class BungeeLanguagePlayer implements LanguagePlayer {
         private BaseComponent suffix;
 
         // other data (has to be saved for refreshing packet)
-        private String nameTagVisibility;
-        private String collisionRule;
+        private Team.NameTagVisibility nameTagVisibility;
+        private Team.CollisionRule collisionRule;
         private int color;
         private byte options;
     }
